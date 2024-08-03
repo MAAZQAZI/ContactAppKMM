@@ -9,6 +9,6 @@ interface ContactDataSource {
     fun getRecentContacts(amount:Int): Flow<List<Contact>>
     suspend fun insertContact(contact: Contact)
     suspend fun deleteContact(id: Long)
-    suspend fun updateContact(contact: Contact)
+    //suspend fun updateContact(contact: Contact)
 
 }

@@ -54,9 +54,9 @@ kotlin {
             @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.kotlinx.datetime)
             implementation(libs.runtime)
             implementation(libs.sqldelight.coroutines)
-            implementation(libs.kotlinx.datetime)
 
             implementation("dev.icerock.moko:mvvm-core:0.16.1")
             implementation("dev.icerock.moko:mvvm-compose:0.16.1")
@@ -121,6 +121,7 @@ sqldelight {
     databases {
         create("ContactsDatabase") {
             packageName.set("org.maaz")
+
         }
     }
 }
