@@ -12,13 +12,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            App()
+            App(
+                darkTheme = false,
+                dynamicColor = true
+            )
         }
     }
 }
 
 @Preview
 @Composable
-fun AppAndroidPreview() {
-    App()
+fun Preview() {
+    App(
+        darkTheme = false,
+        dynamicColor = true
+    )
 }

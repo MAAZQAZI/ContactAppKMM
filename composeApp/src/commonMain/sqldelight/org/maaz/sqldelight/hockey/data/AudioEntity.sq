@@ -1,0 +1,39 @@
+CREATE TABLE AudioEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    status INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    path TEXT NOT NULL,
+    voiceId INTEGER NOT NULL
+);
+
+insert:
+INSERT OR REPLACE
+INTO AudioEntity
+VALUES (?, ?, ?, ?, ?);
+
+get:
+SELECT *
+FROM AudioEntity;
+
+getPendingAudio:
+SELECT * FROM AudioEntity
+WHERE status = 0 OR status = 1;
+
+getSuccessAudioCount:
+SELECT COUNT(*)
+FROM AudioEntity
+WHERE status = 2;
+
+update:
+UPDATE AudioEntity
+SET status = ?, name = ?, path = ?
+WHERE id = ?;
+
+getAudioById:
+SELECT * FROM AudioEntity
+WHERE id = :id;
+
+deleteAudioById:
+DELETE FROM AudioEntity
+WHERE id = :id;
+

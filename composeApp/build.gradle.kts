@@ -15,6 +15,16 @@ plugins {
 kotlin {
     androidTarget {
 
+
+    }
+    android {
+
+    }
+
+    targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget::class.java).all {
+        binaries.withType(org.jetbrains.kotlin.gradle.plugin.mpp.Framework::class.java).all {
+            export("dev.icerock.moko:mvvm-core:0.16.1")
+        }
     }
     
     listOf(
@@ -41,10 +51,13 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
+            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.runtime)
+            implementation(libs.sqldelight.coroutines)
             implementation(libs.kotlinx.datetime)
+
             implementation("dev.icerock.moko:mvvm-core:0.16.1")
             implementation("dev.icerock.moko:mvvm-compose:0.16.1")
             implementation("dev.icerock.moko:mvvm-flow:0.16.1")
@@ -82,14 +95,33 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+
     buildFeatures {
         compose = true
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+
+    }
+}
+dependencies {
+    implementation(libs.androidx.material3.android)
+    implementation ("androidx.compose.material3:material3:1.3.0-beta05")
+
+    commonMainApi("dev.icerock.moko:mvvm-core:0.16.1")
+    commonMainApi("dev.icerock.moko:mvvm-compose:0.16.1")
+    commonMainApi("dev.icerock.moko:mvvm-flow:0.16.1")
+    commonMainApi("dev.icerock.moko:mvvm-flow-compose:0.16.1")
+}
+
+sqldelight {
+    databases {
+        create("ContactsDatabase") {
+            packageName.set("org.maaz")
+        }
     }
 }
 
