@@ -1,0 +1,62 @@
+package core.presentation
+
+import androidx.compose.runtime.Composable
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.refTo
+import platform.UIKit.UIImage
+import platform.UIKit.UIImageJPEGRepresentation
+import platform.UIKit.UIImagePickerController
+import platform.UIKit.UIImagePickerControllerDelegateProtocol
+import platform.UIKit.UIImagePickerControllerOriginalImage
+import platform.UIKit.UIImagePickerControllerSourceType
+import platform.UIKit.UINavigationControllerDelegateProtocol
+import platform.UIKit.UIViewController
+import platform.darwin.NSObject
+import platform.posix.memcpy
+
+actual class ImagePicker(
+    private val rootController: UIViewController
+) {
+
+    private val imagePickerController = UIImagePickerController().apply{
+        sourceType= UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary
+    }
+
+    private var onImagePicked: ((ByteArray) -> Unit)? = {  }
+
+    @OptIn(ExperimentalForeignApi::class)
+    private val delegate = object :  NSObject(), UIImagePickerControllerDelegateProtocol , UINavigationControllerDelegateProtocol{
+
+         fun imagePickerController(
+            picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo: UIImage,
+            editingInfo: Map<Any?, *>
+        ) {
+             val imageNsData = UIImageJPEGRepresentation(didFinishPickingMediaWithInfo, 1.0)
+                 ?:return
+            val bytes= ByteArray(imageNsData.length().toInt())
+             memcpy(bytes.refTo(0), imageNsData.bytes, imageNsData.length())
+
+             onImagePicked?.invoke(bytes)
+             picker.dismissViewControllerAnimated(true, completion = null)
+        }
+
+         fun ImagePickerControllerDidCancel(picker: UIImagePickerController) {
+            picker.dismissViewControllerAnimated(true, completion = null)
+        }
+    }
+
+
+    @Composable
+    actual fun registerPicker(onImagePicked: (ByteArray) -> Unit) {
+        this.onImagePicked = onImagePicked
+
+    }
+
+    actual fun pickImage() {
+        rootController.presentViewController(imagePickerController,true){
+            imagePickerController.delegate=delegate
+        }
+    }
+
+}
